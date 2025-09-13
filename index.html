@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Live Location Tracker</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet/dist/leaflet.css"
+  />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    #map {
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  <script>
+    // Initialize the map
+    const map = L.map('map').setView([0, 0], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Create marker
+    const marker = L.marker([0, 0]).addTo(map);
+
+    // Function to update location
+    function updateLocation(position) {
+      const lat = position.coords.latitude;
+      const lng = position.coords.longitude;
+
+      marker.setLatLng([lat, lng]);
+      map.setView([lat, lng], 15);
+    }
+
+    function handleError(error) {
+      alert("Location access denied or not available.");
+      console.error(error);
+    }
+
+    // Get location updates
+    if ("geolocation" in navigator) {
+      navigator.geolocation.watchPosition(updateLocation, handleError, {
+        enableHighAccuracy: true
+      });
+    } else {
+      alert("Geolocation is not supported by your browser.");
+    }
+  </script>
+</body>
+</html>
